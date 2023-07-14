@@ -1,5 +1,5 @@
 <template>
-  <Index></Index>
+  <HomeIndex></HomeIndex>
 </template>
 
 <script setup lang='ts'>

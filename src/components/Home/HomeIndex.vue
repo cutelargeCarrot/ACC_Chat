@@ -1,8 +1,8 @@
 <template>
 <div class="box flex">
     <IndexNav></IndexNav>
-    <body>
-        c
+    <body class="flex">
+        我是body
     </body>
 </div>
 </template>
@@ -17,6 +17,9 @@
         align-items: center;
         height: 100vh;
         width: 100vw;
-      
+        body{
+            justify-content: center;
+            align-items: center;
+        }
     }
 </style>
