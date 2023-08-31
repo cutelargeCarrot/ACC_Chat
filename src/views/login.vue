@@ -1,12 +1,11 @@
 <template>
     <div class="box flex">
-         <Login></Login>
+        <FormBody></FormBody>
     </div>
  
 </template>
 
 <script setup lang='ts'>
-import Login from '../components/Login/Login.vue'
 </script>
 
 <style lang='scss' scoped>

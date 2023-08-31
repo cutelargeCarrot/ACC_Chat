@@ -6,7 +6,7 @@ const router = createRouter({
   routes: [
     {
       path:'/',
-      redirect:'login'
+      redirect:'home'
     },
     {
       path: '/login',
@@ -16,7 +16,20 @@ const router = createRouter({
     {
       path: '/home',
       name: 'home',
-      component: () => import('@/views/home.vue')
+      component: () => import('@/views/home.vue'),
+      children:[
+        {
+          path:'',
+          redirect:'home/news'
+        },
+      {path: 'chat',
+      component:()=>import('@/views/chat.vue')
+      },
+      {
+        path:'news',
+        component:()=>import('@/views/news.vue')
+      }
+      ]
     },
     {
       path:'/user',
@@ -28,8 +41,8 @@ const router = createRouter({
 
 router.beforeEach((to,from,next)=>{
   if(to.path !== '/login'){
-      const token = localStorage.getItem('token')
-      if(to.path !== '/login' && !token){next('/login')}
+      const token = localStorage.getItem('access_token')
+      if(to.path !== '/login' && !token){ console.log('身份认证失败'); next('/login')}
       else{   next()	}
   }
  else{

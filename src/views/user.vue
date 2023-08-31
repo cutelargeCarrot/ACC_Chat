@@ -5,10 +5,14 @@
             <p class="FSizeB">用户信息</p>
             <div class="flex divcolor">
                 <span>用户名:</span>
+                <div class="span">{{ userinfo.username }}</div>
+            </div>
+            <div class="flex">
+                <span>昵称:</span>
                 <input
                     class="input"
                     type="text"
-                    v-model="userinfo.username"
+                    v-model="userinfo.nickName"
                     @blur="submit"
                 />
             </div>
@@ -18,11 +22,17 @@
                     class="input"
                     type="text"
                     v-model="userinfo.email"
-                    @blur="submit"
                 />
             </div>
-            <div class="flex">
+             <div class="flex ">
+                <span>用户状态:</span>
+                <div class="span">{{ userinfo.isFrozen?"冻结":"正常" }}</div>
             </div>
+             <div class="flex ">
+                <span>注册时间:</span>
+                <div class="span">{{ userinfo.createTime }}</div>
+            </div>
+            <div class="flex"></div>
             <p class="FSizeB">安全 - 密码更改</p>
             <div class="flex divcolor">
                 <span>旧密码:</span>
@@ -55,7 +65,12 @@
                 <input class="input" type="text" placeholder="XXX" />
             </div>
             <div class="flex"></div>
-            <p class="FSizeB" style="border-color: var(--red);color: var(--red)">注销账户</p>
+            <p
+                class="FSizeB"
+                style="border-color: var(--red); color: var(--red)"
+            >
+                注销账户
+            </p>
             <div class="flex divcolorRed">
                 <span>身份验证:</span>
                 <input
@@ -93,8 +108,11 @@ import { openError, openSuccess } from "../hooks/usePOP";
 const router = useRouter();
 const userinfo = reactive({
     username: "",
+    nickName: "",
     email: "",
-    nickname: "nickname",
+    nickname: "",
+    createTime: "",
+    isFrozen: "",
 });
 const password = reactive({
     oldPwd: "",
@@ -104,8 +122,12 @@ const password = reactive({
 // GET INFO
 async function getUserInfo() {
     const data = await getUserinfo();
+    console.log(data);
     userinfo.username = data.data.username;
+    userinfo.nickName = data.data.nickName;
     userinfo.email = data.data.email;
+    userinfo.createTime = data.data.createTime;
+    userinfo.isFrozen = data.data.isFrozen;
 }
 // CHANGE INFO
 async function submit() {
@@ -140,7 +162,7 @@ async function goodbye() {
     }
 }
 
-function clearPwd():void {
+function clearPwd(): void {
     password.newPwd = "";
     password.oldPwd = "";
     password.canselPwd = "";
@@ -169,17 +191,22 @@ onMounted(() => {
         line-height: 50px;
         padding: 0 10px;
         border-radius: 10px;
-        width: 60%;
+        width: 90%;
+        max-width: 900px;
         justify-content: end;
         color: var(--color);
         background-image: linear-gradient(-90deg, var(--bgColor), var(--white));
     }
-    .title:hover{
-        background-image: linear-gradient(-90deg, var(--bgColor), var(--bgColor));
+    .title:hover {
+        background-image: linear-gradient(
+            -90deg,
+            var(--bgColor),
+            var(--bgColor)
+        );
     }
     .info {
-        width: 60%;
-
+        max-width: 900px;
+        width: 90%;
         p {
             width: 100%;
             display: inline-block;
@@ -194,7 +221,7 @@ onMounted(() => {
                 var(--background)
             );
         }
-         .divcolorRed {
+        .divcolorRed {
             background-image: linear-gradient(
                 180deg,
                 rgb(255, 227, 227),
@@ -202,25 +229,30 @@ onMounted(() => {
             );
         }
         div {
+            display: flex;
             padding: 2px;
             justify-content: space-around;
-
             align-items: center;
             height: 60px;
             flex-wrap: wrap;
             color: var(--color);
             span {
-                font-size: 20px;
-                width: 100px;
-                text-align: center;
+                font-size: 16px;
+                flex: 1;
+                text-align: left;
+            }
+            .span {
+                font-size: 16px;
+                flex: 1;
+                justify-content: end;
             }
             .input {
+                padding-right: 2px;
                 outline: 0;
+                flex: 1;
                 height: 40px;
-                padding: 0 10px;
-                margin-left: 20px;
-                font-size: 20px;
-                text-align: center;
+                font-size: 16px;
+                text-align: right;
                 background-color: transparent;
                 border: 0px solid transparent;
                 transition: 0.5s;

@@ -8,7 +8,7 @@ export function getAPI(){
 // 获取用户的基本信息
 export function getUserinfo(){
     return axiosInstance({
-        url:'/my/userinfo',
+        url:'/user/info',
     })
 }
 // 更新用户基本信息
