@@ -1,9 +1,17 @@
 import axiosInstance from '@/utils/http'
 
-//登录
+//用户登录
 export function Login(data){
     return axiosInstance({
-        url:'/api/login',
+        url:'/user/sign_in',
+        method:'POST',
+        data
+    })
+}
+//管理员登录
+export function AdminLogin(data){
+    return axiosInstance({
+        url:'/user/admin/sign_in',
         method:'POST',
         data
     })
@@ -11,7 +19,7 @@ export function Login(data){
 //注册
 export function Sign(data){
     return axiosInstance({
-        url:'/api/register',
+        url:'/user/sign_up',
         method:'POST',
         data
     })
@@ -25,9 +33,9 @@ export function FindPassword(data){
     })
 }
 
-// 获取验证码
-export function GetCode(address){
+// 刷新token
+export function RefreshToken(){
     return axiosInstance({
-        url:`/email/register-captcha?address=${address}`,
+        url:`/user/refresh?refreshToken=${localStorage.getItem('refresh_token')}`
     })
 }

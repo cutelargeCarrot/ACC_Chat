@@ -1,6 +1,6 @@
 <template>
     <div class="Box flex border">
-        <div class="title FSizeB">
+        <div class="title FSizeBP">
             {{ statustitle[status] }}
             <!-- 转注册 -->
             <span
@@ -24,7 +24,163 @@
                 >已有账户?去登录</span
             >
         </div>
-        <div class="mintitle" v-if="status != 2">
+
+        <div class="input flex" v-if="status != 1">
+            <input
+                type="text"
+                name="username"
+                id="username"
+                required
+                class="border"
+                v-model="userinfo.username"
+            />
+            <span>用户名</span>
+        </div>
+
+        <div class="msg" v-if="status == 2"></div>
+
+        <div class="input flex" v-if="status == 2">
+            <input
+                type="text"
+                name="nickName"
+                id="nickName"
+                required
+                class="border"
+                v-model="userinfo.nickname"
+            />
+            <span>昵称</span>
+        </div>
+
+        <div class="msg" v-if="status != 1"></div>
+
+        <div class="input flex" v-if="!status">
+            <input
+                type="password"
+                name="password"
+                id="password"
+                required
+                class="border"
+                v-model="userinfo.password"
+            />
+            <span>密码</span>
+        </div>
+        <div class="msg" v-if="!status"></div>
+
+        <div class="input flex" v-if="status">
+            <input
+                type="password"
+                name="password"
+                id="password"
+                required
+                class="border"
+                v-model="userinfo.password"
+            />
+            <span>{{ status === 1 ? "新密码" : "密码" }}</span>
+        </div>
+
+        <div
+            class="msg"
+            v-if="status"
+            v-text="pwdMSG ? '' : '密码不符合 4-20 位规范'"
+        ></div>
+
+        <div class="input flex" v-if="status == 2">
+            <input
+                type="password"
+                name="repassword"
+                id="repassword"
+                required
+                class="border"
+                v-model="userinfo.repassword"
+            />
+            <span>确认密码</span>
+        </div>
+        <div class="msg" v-if="status == 2" v-text="repwdMSG"></div>
+
+        <div class="input flex email" v-if="status">
+            <input
+                type="text"
+                name="email"
+                required
+                class="border"
+                v-model="userinfo.email"
+            />
+            <span>邮箱</span>
+
+            <button
+                class="border flex submit"
+                v-text="emailcodeButton"
+                @click="getCode"
+                :disabled="!userinfo.email || !emailMSG || time"
+            ></button>
+        </div>
+
+        <div
+            class="msg"
+            v-if="status"
+            v-text="emailMSG ? '' : '邮箱不符合规范'"
+        ></div>
+
+        <div class="input flex" v-if="status">
+            <input
+                type="text"
+                name="email"
+                required
+                class="border"
+                v-model="userinfo.captcha"
+            />
+            <span>验证码</span>
+        </div>
+        <div class="msg" v-if="status"></div>
+
+        <div class="slider-demo-block">
+            <span class="demonstration">滑动至{{ value1 }}以验证</span>
+            <el-slider v-model="value2" :step="10" show-stops />
+        </div>
+        <div>
+            <a class="a" href="javascript:;" v-if="status == 2">隐私条款</a>
+            <input type="checkbox" v-if="status == 2" v-model="checked" />
+            <span style="color: var(--red); margin-left: 30px"></span>
+        </div>
+        <div class="button flex">
+            <button class="clear flex border" @click="clear">清空</button>
+
+            <button
+                v-if="status != 2"
+                class="submit flex border"
+                @click="submit(status)"
+                :disabled="loading || !verify"
+            >
+                {{
+                    loading
+                        ? "Loading..."
+                        : status === 0
+                        ? "点我登录"
+                        : "修改密码"
+                }}
+            </button>
+
+            <button
+                v-else
+                class="submit flex border"
+                @click="signIn"
+                :disabled="
+                    loading ||
+                    !verify ||
+                    userinfo.password != userinfo.repassword ||
+                    !userinfo.email ||
+                    !emailMSG ||
+                    !checked ||
+                    !pwdMSG ||
+                    !userinfo.nickname ||
+                    !userinfo.captcha
+                "
+            >
+                {{ loading ? "Loading..." : "免费注册" }}
+            </button>
+        </div>
+
+        <div class="mintitle flex" v-if="status != 2">
             <!-- 转登录 密码 -->
             <span
                 class="FsizeN pointer"
@@ -48,156 +204,7 @@
                 "
                 >忘记密码？</span
             >
-        </div>
-        <div class="input flex" v-if="status != 1">
-            <input
-                type="text"
-                name="username"
-                id="username"
-                required
-                class="border"
-                v-model="userinfo.username"
-            />
-            <span>用户名</span>
-        </div>
-
-        <div class="msg" v-if="status == 2"></div>
-
-        <div class="input flex" v-if="status == 2">
-            <input
-                type="text"
-                name="nickName"
-                id="nickName"
-                required
-                class="border"
-                v-model="userinfo.nickName"
-            />
-            <span>昵称</span>
-        </div>
-
-        <div class="msg" v-if="status != 1"></div>
-
-        <div class="input flex" v-if="!status">
-            <input
-                type="password"
-                name="password"
-                id="password"
-                required
-                class="border"
-                v-model="userinfo.password"
-            />
-            <span>密码</span>
-        </div>
-        <div class="msg" v-if="!status"></div>
-
-        
-  <div class="input flex" v-if="status">
-            <input
-                type="password"
-                name="password"
-                id="password"
-                required
-                class="border"
-                v-model="userinfo.password"
-            />
-            <span>{{status===1?'新密码':'密码'}}</span>
-        </div>
-
-        <div
-            class="msg"
-            v-if="status"
-            v-text="pwdMSG ? '' : '密码不符合4-12位规范'"
-        ></div>
-
-        <div class="input flex" v-if="status == 2">
-            <input
-                type="password"
-                name="repassword"
-                id="repassword"
-                required
-                class="border"
-                v-model="userinfo.repassword"
-            />
-            <span>确认密码</span>
-        </div>
-        <div class="msg" v-if="status == 2" v-text="repwdMSG"></div>
-
-        <div class="input flex" v-if="status">
-            <input
-                type="text"
-                name="email"
-                required
-                class="border"
-                v-model="userinfo.email"
-            />
-            <span>邮箱</span>
-        </div>
-        <div
-            class="msg"
-            v-if="status"
-            v-text="emailMSG ? '' : '邮箱不符合规范'"
-        ></div>
-
-        <div class="input flex" v-if="status">
-            <input
-                type="text"
-                name="email"
-                required
-                class="border"
-                v-model="userinfo.captcha"
-            />
-            <span>验证码</span>
-        </div>
-        <div class="msg" v-if="status"></div>
-
-        <div class="button flex" v-if="status">
-            <button
-                class="border flex submit"
-                v-text="emailcodeButton"
-                @click="getCode"
-                :disabled="!userinfo.email || !emailMSG || time"
-            ></button>
-        </div>
-
-        <div class="slider-demo-block">
-            <span class="demonstration">滑动至{{ value1 }}以验证</span>
-            <el-slider v-model="value2" :step="10" show-stops />
-        </div>
-        <div class="button flex">
-            <button class="clear flex border" @click="clear">清空</button>
-
-            <button
-                v-if="status != 2"
-                class="submit flex border"
-                @click="submit(status)"
-                :disabled="loading || !verify"
-            >
-                {{ loading ? "Loading..." : status===0?"点我登录":"修改密码" }}
-            </button>
-
-            <button
-                v-else
-                class="submit flex border"
-                @click="signIn"
-                :disabled="
-                    loading ||
-                    !verify ||
-                    userinfo.password != userinfo.repassword ||
-                    !userinfo.email ||
-                    !emailMSG ||
-                    !checked ||
-                    !pwdMSG ||
-                    !userinfo.nickName ||
-                    !userinfo.captcha
-                "
-            >
-                {{ loading ? "Loading..." : "免费注册" }}
-            </button>
-        </div>
-        <div>
-            <a class="a" href="javascript:;" v-if="status == 2">隐私条款</a>
-            <input type="checkbox" v-if="status == 2" v-model="checked" />
-            <span style="color: var(--red); margin-left: 30px"></span>
+            <span><router-link to="/adminLogin">管理员入口</router-link></span>
         </div>
     </div>
 </template>
@@ -206,7 +213,8 @@
 import { log } from "console";
 import { ref, reactive, computed, onMounted, watchEffect } from "vue";
 import { useRouter } from "vue-router";
-import { FindPassword, GetCode, Login, Sign } from "../apis/loginApis";
+import {  SignInCode, UpdatePasswordCode } from "../apis/emailApis";
+import { FindPassword, Login, Sign } from "../apis/loginApis";
 import { openSuccess, openError } from "../hooks/usePOP.js";
 
 // import {useuserinfoStore} from '../../stores/user'
@@ -236,7 +244,7 @@ let checked = ref<Boolean>(false);
 // 用户数据
 const userinfo = reactive({
     username: "",
-    nickName: "",
+    nickname: "",
     password: "",
     repassword: "",
     email: "",
@@ -251,12 +259,14 @@ let emailMSG = computed(() => {
     return flag;
 });
 let pwdMSG = computed(() => {
-    var reg = /^[\S]{4,12}$/;
+    var reg = /^[\S]{4,20}$/;
     let flag: boolean = reg.test(userinfo.password) || userinfo.password == "";
     return flag;
 });
 let repwdMSG = computed(() =>
-    userinfo.password === userinfo.repassword ? "" : "两次输入密码不同"
+    userinfo.password === userinfo.repassword || !userinfo.repassword
+        ? ""
+        : "两次输入密码不同"
 );
 let time = ref(0);
 
@@ -276,35 +286,37 @@ function clear(): void {
     value2.value = 0;
     checked.value = false;
     userinfo.email = "";
-    userinfo.captcha="";
-    userinfo.nickName="";
+    userinfo.captcha = "";
+    userinfo.nickname = "";
 }
 
 let verify = computed(() => {
-    if(status.value == 1){
-        return value1.value == value2.value && userinfo.password && userinfo.captcha
-
+    if (status.value == 1) {
+        return (
+            value1.value == value2.value &&
+            userinfo.password &&
+            userinfo.captcha
+        );
     }
     return (
         value1.value == value2.value && userinfo.username && userinfo.password
     );
 });
- function submit(status) {
-    if(status){
-        submitFindPassword()
-    }
-    else{
-        submitLogin()
+function submit(status) {
+    if (status) {
+        submitFindPassword();
+    } else {
+        submitLogin();
     }
 }
 async function submitLogin() {
     loading.value = true;
-    
     try {
         const data = await Login({
             username: userinfo.username,
             password: userinfo.password,
         });
+        if (data.status === 400) openError(data.data);
         if (data.data.accessToken) {
             localStorage.setItem("access_token", data.data.accessToken);
             localStorage.setItem("refresh_token", data.data.refreshToken);
@@ -322,39 +334,53 @@ async function submitLogin() {
         clear();
     }
 }
-
-async function submitFindPassword(){
-    loading.value = true
-    try{
-        const data = await FindPassword(userinfo)
-        console.log(data)
-        openSuccess('修改成功')
+// 修改密码
+async function submitFindPassword() {
+    loading.value = true;
+    try {
+        const data = await FindPassword(userinfo);
+        if(data.status >= 400)openError(data.data)
+        else openSuccess("修改成功");
         loading.value = false;
-
-    } catch(e){
-        console.log(e)
-        openError('修改失败')
+    } catch (e) {
+        console.log(e);
+        openError("修改失败");
         loading.value = false;
     }
 }
-
+// 注册
 async function signIn() {
     loading.value = true;
     try {
         const data = await Sign(userinfo);
         loading.value = false;
-        openSuccess(data.message);
+        if (data.status >= 200 && data.status < 300) openSuccess(data.data);
+        if (data.status >= 400) openError(data.data);
+        status.value = 0;
+        YZM();
     } catch (e) {
         openError("注册失败 " + e);
         console.log(e);
         loading.value = false;
     }
 }
-
+// 获取验证码
 async function getCode() {
     time.value = 20;
-    const data = await GetCode(userinfo.email);
-    openSuccess(data.data);
+    try{
+        if (status.value === 1) {
+        const data = await UpdatePasswordCode(userinfo.email);
+        if (data.status >= 400) openError( "发送失败");
+        else openSuccess(data.data || "发送成功");
+    }
+    if (status.value === 2) {
+        const data = await SignInCode(userinfo.email);
+        if (data.status >= 400) openError("发送失败");
+        else openSuccess(data.data || "发送成功");
+    }
+    } catch(e) {
+        console.log(e)
+    }
 }
 
 function YZM() {
@@ -378,6 +404,7 @@ onMounted(() => {
     .title {
         padding: 5%;
         padding-bottom: 10px;
+        margin-bottom: 15px;
         width: 100%;
         color: var(--borderColor);
         position: relative;
@@ -394,11 +421,18 @@ onMounted(() => {
         }
     }
     .mintitle {
-        width: 110px;
+        width: 100%;
         margin-bottom: 15px;
         text-align: center;
         color: var(--borderColor);
         height: 20px;
+        padding: 0 20px;
+        justify-content: space-between;
+        span {
+            a {
+                color: var(--borderColor);
+            }
+        }
     }
     .msg {
         margin: 5px 20px;
@@ -439,6 +473,27 @@ onMounted(() => {
             transform: translateX(10px) translateY(-20px);
         }
     }
+
+    .email {
+        padding: 0 20px;
+        input {
+            flex: 3;
+        }
+        button {
+            flex: 1;
+            justify-content: center;
+            align-items: center;
+            border-radius: 10px;
+            margin-left: 20px;
+            background-color: var(--background);
+            color: var(--borderColor);
+        }
+        button:disabled {
+            border-color: var(--gray);
+            color: var(--gray);
+        }
+    }
+
     .a {
         margin: 20px;
         display: inline-block;
@@ -491,6 +546,15 @@ onMounted(() => {
     }
     .slider-demo-block .demonstration + .el-slider {
         flex: 0 0 60%;
+    }
+
+    .admin {
+        justify-content: start;
+        padding-left: 20px;
+        font-size: 1em;
+        a {
+            color: var(--color);
+        }
     }
 }
 </style>

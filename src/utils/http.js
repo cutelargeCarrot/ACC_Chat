@@ -1,5 +1,6 @@
 import axios from 'axios'
 import {openError} from '@/hooks/usePOP'
+import { RefreshToken } from '../apis/loginApis'
 const axiosInstance = axios.create({
     baseURL:'http://127.0.0.1:3000',
     timeout:5000
@@ -15,24 +16,32 @@ axiosInstance.interceptors.request.use(config=>{
 },e=> Promise.reject(e)) 
 
 // refreshToken
-async function refreshToken() {
-    console.log(`Bearer ${localStorage.getItem('refresh_token')}`)
-        const res = await axios.get('http://127.0.0.1:3000/user/refresh', {
-            params: {
-                refreshToken: localStorage.getItem('refresh_token')
-            }
-        });
-
-        localStorage.setItem('access_token', res.data.data.access_token || '');
-        localStorage.setItem('refresh_token', res.data.data.refresh_token || '');
+async function refreshtoken() {
+        const res = await RefreshToken()
+        localStorage.setItem('access_token', res.data.accessToken || '');
+        localStorage.setItem('refresh_token', res.data.refreshToken || '');
         return res;
       }
 // 响应拦截器
-axiosInstance.interceptors.response.use(res=>res.data,async e=>{
+axiosInstance.interceptors.response.use(async res=>{
+  if(res.data.status == 401 && !res.config.url.includes('/user/refresh')){
 
+    const res = await refreshtoken()
+    if(res.status === 200) {
+        return axiosInstance(res.config);
+      } else {
+        openError('登录过期，请重新登录');
+        return Promise.reject(res.data)
+      }
+        
+    } else {
+      return res.data;
+    }
+},async e=>{
+  
     if(e.response.status === 401 && !e.config.url.includes('/user/refresh')){
 
-        const res = await refreshToken()
+        const res = await refreshtoken()
         if(res.status === 200) {
             return axiosInstance(e.config);
           } else {

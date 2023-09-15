@@ -3,7 +3,11 @@
 </template>
 
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
+import {provide} from 'vue'
+import * as echarts from 'echarts'
+
+provide("echarts",echarts)
+
 
 </script>
 

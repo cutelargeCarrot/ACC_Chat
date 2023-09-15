@@ -1,4 +1,4 @@
-//登录
+// server send event
 export function SSE(){
     const source = new EventSource('http://localhost:3000/stream')
     source.onopen = (data) =>{

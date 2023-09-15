@@ -7,7 +7,7 @@
             <router-link class="left flex" active-class="active" to="/home/chat"
                 >会话</router-link
             >
-            <router-link class="left flex" active-class="active" to="/user"
+            <router-link class="left flex" active-class="active" to="/home/user"
                 >用户</router-link
             >
         </nav>
@@ -77,6 +77,7 @@ function exit(path: string): void {
 }
 .pop {
     position: absolute;
+    z-index: 100;
     width: 400px;
     height: 150px;
     top: calc(50% - 75px);

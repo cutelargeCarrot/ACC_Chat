@@ -14,23 +14,24 @@ export function getUserinfo(){
 // 更新用户基本信息
 export function updateUserinfo(data){
     return axiosInstance({
-        url:'/my/updateinfo',
+        url:'/user/update',
         method:'POST',
         data
     })
 }
-// // 更改密码
-export function updatePwd(data){
+
+// 更新用户邮箱信息
+export function UpdateEmail(data){
     return axiosInstance({
-        url:'/my/updatepwd',
+        url:'/user/update_email',
         method:'POST',
         data
     })
 }
-// // 注销账户
-export function cancel(data){
+// 更新用户密码
+export function UpdatePassword(data){
     return axiosInstance({
-        url:'/my/cancel',
+        url:'/user/update_password',
         method:'POST',
         data
     })
