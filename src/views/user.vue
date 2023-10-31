@@ -15,7 +15,8 @@
                 <input
                     class="input"
                     type="text"
-                    v-model.trim="userinfo.nickname"
+                    v-model.trim="newUserinfo.newNickname"
+                    :placeholder="userinfo.nickname"
                     @blur="update"
                 />
             </div>
@@ -30,7 +31,8 @@
                 <input
                     class="input"
                     type="text"
-                    v-model.trim="userinfo.phoneNumber"
+                    v-model.trim="newUserinfo.newPhoneNumber"
+                    :placeholder="userinfo.phoneNumber"
                     @blur="update"
                 />
             </div>
@@ -129,6 +131,10 @@ import { UpdateInfoCode, UpdatePasswordCode } from "../apis/emailApis";
 import { openError, openSuccess } from "../hooks/usePOP";
 
 const router = useRouter();
+const newUserinfo = reactive({
+    newNickname:"",
+    newPhoneNumber:"",
+})
 const userinfo = reactive({
     username: "",
     email: "",
@@ -184,7 +190,11 @@ async function getUserInfo() {
 // CHANGE INFO
 async function update() {
     try {
-        const data = await updateUserinfo(userinfo);
+        if(newUserinfo.newNickname === userinfo.nickname && newUserinfo.newPhoneNumber === userinfo.phoneNumber  ) return
+        const data = await updateUserinfo({
+            nickname:newUserinfo.newNickname?newUserinfo.newNickname : userinfo.nickname,
+            phoneNumber:newUserinfo.newPhoneNumber?newUserinfo.newPhoneNumber : userinfo.phoneNumber
+        });
         if (data.status >= 400) {
             openError(data.data);
         }
@@ -266,12 +276,11 @@ onMounted(() => {
     opacity: 0.8;
     width: 100%;
     height: calc(100vh - 50px);
-    margin-top: 20px;
-    padding: 30px 0;
     flex-direction: column;
     justify-content: start;
     align-items: center;
     .title {
+    margin-top: 30px;
         height: 50px;
         line-height: 50px;
         padding: 0 10px;

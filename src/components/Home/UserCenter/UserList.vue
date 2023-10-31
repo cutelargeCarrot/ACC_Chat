@@ -39,6 +39,7 @@ const handleClick = () => {
 <style lang='scss' scoped>
 .box {
     position: relative;
+    max-width: 1600px;
     z-index: 0;
     justify-content: center;
     align-items: center;

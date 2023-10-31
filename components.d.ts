@@ -7,7 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    AdminButton: typeof import('./src/components/AdminButton.vue')['default']
+    AdminButton: typeof import('./src/components/Home/UserCenter/AdminButton.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElPagination: typeof import('element-plus/es')['ElPagination']
     ElRadioButton: typeof import('element-plus/es')['ElRadioButton']
@@ -16,13 +16,14 @@ declare module 'vue' {
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
-    FormBody: typeof import('./src/components/FormBody.vue')['default']
+    FormBody: typeof import('./src/components/Login/FormBody.vue')['default']
     HomeIndex: typeof import('./src/components/Home/HomeIndex.vue')['default']
     IndexNav: typeof import('./src/components/Home/IndexNav.vue')['default']
-    NewsEcharts: typeof import('./src/components/Home/NewsEcharts.vue')['default']
-    PagingDevice: typeof import('./src/components/PagingDevice.vue')['default']
+    NewsEcharts: typeof import('./src/components/Graph/NewsEcharts.vue')['default']
+    PagingDevice: typeof import('./src/components/Home/UserCenter/PagingDevice.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    UserList: typeof import('./src/components/UserList.vue')['default']
+    SearchUser: typeof import('./src/components/Home/UserCenter/SearchUser.vue')['default']
+    UserList: typeof import('./src/components/Home/UserCenter/UserList.vue')['default']
   }
 }

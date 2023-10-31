@@ -17,8 +17,8 @@
 
 <style lang='scss' scoped>
         p {
-            width: 100%;
-            display: inline-block;
+            width: 90vw;
+            max-width: 900px;
             border-bottom: 1px solid var(--color);
             color: var(--color);
             padding: 10px 0;

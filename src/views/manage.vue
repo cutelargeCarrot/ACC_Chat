@@ -1,5 +1,6 @@
 <template>
   <div class="box flex">
+    <SearchUser @controlSearch="controlSearch"></SearchUser>
     <UserList :resData="resData"></UserList>
      <PagingDevice :page="Info.page" :pageSize="Info.pageSize" :totalCount="resData.totalCount" @controlPage="controlPage" @controlPageSize="controlPageSize"></PagingDevice>
   </div>
@@ -21,6 +22,13 @@ const resData = reactive({
   users:[],
   totalCount:0
 })
+
+const controlSearch = (value)=>{
+  Info.username = value.username
+  Info.nickname = value.nickname
+  Info.email = value.email
+  GetList()
+}
 const controlPage = (value)=>{
   Info.page = value
   GetList()
@@ -48,6 +56,8 @@ onMounted(()=>{
 
 <style lang='scss' scoped>
   .box{
+    height: calc(100vh - 50px);
+    overflow: auto;
     justify-content: center;
     align-items: center;
   }

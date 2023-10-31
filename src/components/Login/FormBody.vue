@@ -213,9 +213,9 @@
 import { log } from "console";
 import { ref, reactive, computed, onMounted, watchEffect } from "vue";
 import { useRouter } from "vue-router";
-import {  SignInCode, UpdatePasswordCode } from "../apis/emailApis";
-import { FindPassword, Login, Sign } from "../apis/loginApis";
-import { openSuccess, openError } from "../hooks/usePOP.js";
+import {  SignInCode, UpdatePasswordCode } from "../../apis/emailApis";
+import { FindPassword, Login, Sign } from "../../apis/loginApis";
+import { openSuccess, openError } from "../../hooks/usePOP.js";
 
 // import {useuserinfoStore} from '../../stores/user'
 // import {storeToRefs} from 'pinia'
@@ -316,10 +316,11 @@ async function submitLogin() {
             username: userinfo.username,
             password: userinfo.password,
         });
+
         if (data.status === 400) openError(data.data);
-        if (data.data.accessToken) {
-            localStorage.setItem("access_token", data.data.accessToken);
-            localStorage.setItem("refresh_token", data.data.refreshToken);
+        if (data.data.access_token) {
+            localStorage.setItem("access_token", data.data.access_token);
+            localStorage.setItem("refresh_token", data.data.refresh_token);
             router.push("/home");
         } else {
             localStorage.removeItem("access_token");

@@ -13,9 +13,8 @@
     height: 100%;
     width: 100%;
     overflow: hidden;
-    flex-direction: column;
-      align-items: center;
     background-color: var(--background);
-   
+    justify-content: center;
+    align-items: center;
   }
 </style>
